@@ -33,25 +33,6 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 @RestController
 @RequestMapping("/livro")
 public class LivroController {
-
-	
-	@Primary @Bean
-	  public ObjectMapper objectMapper() {
-	      JavaTimeModule javaTimeModule = new JavaTimeModule();
-	      final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-	      javaTimeModule.addSerializer(new LocalDateTimeSerializer(dateTimeFormatter));
-	      javaTimeModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(dateTimeFormatter));
-	      final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-	      javaTimeModule.addSerializer(new LocalDateSerializer(dateFormatter));
-	      javaTimeModule.addDeserializer(LocalDate.class, new LocalDateDeserializer(dateTimeFormatter));
-	      return JsonMapper.builder()
-	          // mimic default ObjectMapper's disabled features, according to Baeldung article.
-	          .disable(MapperFeature.DEFAULT_VIEW_INCLUSION)
-	          .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-	          .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
-	          .addModule(javaTimeModule)
-	          .build();
-	  }
 	
 	@Autowired
 	private LivroService livroService;

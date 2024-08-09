@@ -3,6 +3,7 @@ package com.br.books.GerenciaLivros.dto;
 import java.time.LocalDate;
 
 import com.br.books.GerenciaLivros.entities.LivroEntity;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 
@@ -11,7 +12,7 @@ public class LivroDTO {
 	private Long id;
 	private String titulo;
 	private String autor;
-	@JsonDeserialize(using = LocalDateDeserializer.class)
+	@JsonFormat(pattern = "dd/MM/yyyy")
 	private LocalDate data;
 	
 	

@@ -25,8 +25,8 @@ public class LivroEntity {
 	private String titulo;
 	@NotNull
 	private String autor;
-	@JsonDeserialize(using = LocalDateDeserializer.class)
 	@Column(name = "data")
+	@JsonFormat(pattern = "dd/MM/yyyy")
 	private LocalDate dataPublicacao;
 	
 	public LivroEntity() {
