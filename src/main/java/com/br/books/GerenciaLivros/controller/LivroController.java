@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.br.books.GerenciaLivros.dto.LivroDTO;
+import com.br.books.GerenciaLivros.entities.LivroEntity;
 import com.br.books.GerenciaLivros.service.LivroService;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
@@ -30,13 +31,26 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+
 @RestController
 @RequestMapping("/livro")
 public class LivroController {
 	
 	@Autowired
 	private LivroService livroService;
-
+	
+	@Operation(summary = "Busca livro por id", description = "Essa funcionalidade possui como finalidade a busca de um livro pelo id")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Livro encontrado",
+					content = @Content(mediaType = "application/json",
+					schema = @Schema(implementation = LivroEntity.class))),
+					@ApiResponse(responseCode = "400", description = "Livro não encontrado")
+	})
 	@GetMapping("/{id}")
 	private LivroDTO getLivrosById(@PathVariable Long id) {
 		return livroService.getLivrosById(id);
