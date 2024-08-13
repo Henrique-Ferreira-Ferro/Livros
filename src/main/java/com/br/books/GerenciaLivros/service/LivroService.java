@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.br.books.GerenciaLivros.dto.LivroDTO;
 import com.br.books.GerenciaLivros.entities.LivroEntity;
+import com.br.books.GerenciaLivros.exceptions.BadRequestException;
 import com.br.books.GerenciaLivros.repository.LivroRepository;
 
 @Service
@@ -23,7 +25,7 @@ public class LivroService {
 		Optional<LivroEntity> livroE = livroRepository.findById(id);
 		
 		if(livroE.isEmpty()) {
-			throw new RuntimeException("Não foi possivel encontrar o Livro");
+			throw new ObjectNotFoundException(id, new LivroDTO().getClass().getName());
 		}
 		
 		return new LivroDTO(livroE.get());
@@ -47,8 +49,15 @@ public class LivroService {
 	
 	public LivroDTO createLivro(LivroDTO livroDto) {
 		LivroEntity livroEn = new LivroEntity();
+		if(livroDto.getAutor().isEmpty()) {
+			throw new BadRequestException("Não deixe o nome do Autor vaziu");
+		}
 		livroEn.setAutor(livroDto.getAutor());
+		if(livroDto.getTitulo().isEmpty()) {
+			throw new BadRequestException("Não deixe o titulo vaziu");
+		}
 		livroEn.setTitulo(livroDto.getTitulo());
+	
 		livroEn.setDataPublicacao(livroDto.getData());
 		livroEn = livroRepository.save(livroEn);
 		
@@ -62,13 +71,20 @@ public class LivroService {
 		Optional<LivroEntity> livroEnt = livroRepository.findById(id);
 		
 		if(livroEnt.isEmpty()) {
-			throw new RuntimeException("Não foi encontrado nenhum livro");
+			throw new ObjectNotFoundException(id, new LivroDTO().getClass().getName());
 		}
 		
 		LivroEntity livroEnMod = livroEnt.get();
 		
+		if(livroDto.getAutor().isEmpty()) {
+			throw new BadRequestException("Não deixe o nome do Autor vaziu");
+		}
 		livroEnMod.setAutor(livroDto.getAutor());
 		livroEnMod.setDataPublicacao(livroDto.getData());
+		
+		if(livroDto.getTitulo().isEmpty()) {
+			throw new BadRequestException("Não deixe o titulo vaziu");
+		}
 		livroEnMod.setTitulo(livroDto.getTitulo());
 		livroEnMod = livroRepository.save(livroEnMod);
 		
@@ -80,16 +96,15 @@ public class LivroService {
 	//Deletar um livro
 	public String deleteLivro(Long id) {
 		
-		Optional<LivroEntity> livro = livroRepository.findById(id);
+		Optional<LivroEntity> livroEnt = livroRepository.findById(id);
 		
-		if(livro.isEmpty()) {
-			throw new RuntimeException("Não foi possivel encontrar nenhum livro");
-		}else {
-			LivroDTO livroDto = new LivroDTO(livro.get());
+		if(livroEnt.isEmpty()) {
+			throw new ObjectNotFoundException(id, new LivroDTO().getClass().getName());
+
+		}
+			LivroDTO livroDto = new LivroDTO(livroEnt.get());
 			livroRepository.deleteById(id);
 			return "O Livro: "+ livroDto.getTitulo()+", foi deletado com sucesso!";
-		}
-		
 	}
 	
 	
