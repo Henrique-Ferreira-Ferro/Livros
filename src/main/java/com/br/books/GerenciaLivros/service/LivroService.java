@@ -87,7 +87,7 @@ public class LivroService {
 		}else {
 			LivroDTO livroDto = new LivroDTO(livro.get());
 			livroRepository.deleteById(id);
-			return "O Livro :"+ livroDto.getTitulo()+", foi deletado com sucesso!";
+			return "O Livro: "+ livroDto.getTitulo()+", foi deletado com sucesso!";
 		}
 		
 	}
